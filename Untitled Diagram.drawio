@@ -1,1 +1,22 @@
-<mxfile host="app.diagrams.net" modified="2021-02-15T18:07:36.524Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36" version="14.3.2" etag="SOKcqas3L7T0RUVP2nJT" type="github"><diagram id="sUMyVzyWyRWeqVophwWe">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-02-15T18:59:29.673Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36" etag="TKyDEczYKct--NWvoIIt" version="14.3.2" type="github">
+  <diagram id="sUMyVzyWyRWeqVophwWe" name="Page-1">
+    <mxGraphModel dx="782" dy="437" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Q09GPEOpXgZo_c62fEW8-9" value="Users" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=16;" vertex="1" parent="1">
+          <mxGeometry x="90" y="50" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="Q09GPEOpXgZo_c62fEW8-10" value="Username: string&#xa;Password: string&#xa;FirstName: String&#xa;LastName: String&#xa;email: email&#xa;IsAdmin: boolean&#xa;&#xa;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" vertex="1" parent="Q09GPEOpXgZo_c62fEW8-9">
+          <mxGeometry y="30" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Q09GPEOpXgZo_c62fEW8-11" value="Speechs" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;" vertex="1" parent="1">
+          <mxGeometry x="320" y="50" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="Q09GPEOpXgZo_c62fEW8-12" value="Title: String&#xa;Content?: String&#xa;VideoUrl?: String" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;" vertex="1" parent="Q09GPEOpXgZo_c62fEW8-11">
+          <mxGeometry y="30" width="160" height="100" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

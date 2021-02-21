@@ -3,13 +3,19 @@ import {IUser,User} from '../schemas/UserSchema';
 export const router = express.Router();
 
 router.route('/')
+.get((req:Request,res:Response)=>{
+    User.find({},(err:Error,doc:IUser[])=>{
+        console.log(doc);
+    })
+})
 .post((req:Request,res:Response)=>{
+    const {userName,password,firstName,lastName,email} = req.body;
     const member: IUser = new User({
-      userName: req.body.userName,
-      password: req.body.password,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email
+        userName,
+        password,
+        firstName,
+        lastName,
+        email
     });
     member.save().then(()=>{
         console.log(member);

@@ -9,12 +9,14 @@ var UserSchema_1 = require("../schemas/UserSchema");
 exports.router = express_1.default.Router();
 exports.router.post('/', function (req, res) {
     UserSchema_1.User.findOne({ userName: req.body.userName }, function (err, data) {
+        console.log("logging");
         if (data) {
             if (req.body.password === data.password) {
-                res.send("Log in");
+                console.log("log in");
+                res.redirect('/');
             }
             else {
-                res.send("asdas");
+                res.send("Id or Password is wrong");
             }
         }
     });

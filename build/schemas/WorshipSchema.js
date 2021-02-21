@@ -19,16 +19,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = exports.ServiceSchema = void 0;
+exports.Worship = exports.WorshipSchema = void 0;
 var mongoose_1 = __importStar(require("mongoose"));
-exports.ServiceSchema = new mongoose_1.Schema({
+exports.WorshipSchema = new mongoose_1.Schema({
     title: { type: String, require: true },
     date: Date,
     prayer: String,
-    startinghymm: String,
+    offering: String,
+    startingHymm: String,
     bibleText: String,
     context: String,
     videoURL: String,
-    endinghymm: String
+    endingHymm: String
 });
-exports.User = mongoose_1.default.model('Speech', exports.ServiceSchema);
+exports.Worship = mongoose_1.default.model('Worship', exports.WorshipSchema);

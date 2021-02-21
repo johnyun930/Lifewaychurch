@@ -8,13 +8,19 @@ var express_1 = __importDefault(require("express"));
 var UserSchema_1 = require("../schemas/UserSchema");
 exports.router = express_1.default.Router();
 exports.router.route('/')
+    .get(function (req, res) {
+    UserSchema_1.User.find({}, function (err, doc) {
+        console.log(doc);
+    });
+})
     .post(function (req, res) {
+    var _a = req.body, userName = _a.userName, password = _a.password, firstName = _a.firstName, lastName = _a.lastName, email = _a.email;
     var member = new UserSchema_1.User({
-        userName: req.body.userName,
-        password: req.body.password,
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email
+        userName: userName,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        email: email
     });
     member.save().then(function () {
         console.log(member);

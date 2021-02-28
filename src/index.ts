@@ -75,7 +75,7 @@ passport.use(new LocalStrategy(
             }else{
                 console.log(4);
 
-                return response.send('/');
+                return .send('/');
             }
         }).catch((err)=>{
             cb(err);
@@ -86,7 +86,7 @@ passport.use(new LocalStrategy(
 
 
 passport.serializeUser<any,any>((req,user,done)=>{
-    done(undefined,user)
+    done(null,user)
 })
 
 passport.deserializeUser((id,done)=>{

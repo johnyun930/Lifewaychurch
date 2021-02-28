@@ -3,7 +3,7 @@ import passport from 'passport';
 export const router = express.Router();
 
 router.post('/', passport.authenticate('local',{
-    failureRedirect:'localhost:3000/'
+    failureRedirect: passport.
 }),
 function(req, res) {
     console.log(req.isAuthenticated());

@@ -7,8 +7,6 @@ exports.router = void 0;
 var express_1 = __importDefault(require("express"));
 var passport_1 = __importDefault(require("passport"));
 exports.router = express_1.default.Router();
-exports.router.post('/', passport_1.default.authenticate('local', {
-    failureRedirect: 'localhost:3000/'
-}), function (req, res) {
+exports.router.post('/', passport_1.default.authenticate('local'), function (req, res) {
     console.log(req.isAuthenticated());
 });

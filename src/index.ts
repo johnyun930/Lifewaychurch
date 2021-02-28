@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config();
-import express, {Request,response,Response} from 'express';
+import express, {Request,Response} from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import { db } from './db';
@@ -75,7 +75,7 @@ passport.use(new LocalStrategy(
             }else{
                 console.log(4);
 
-                return .send('/');
+                return cb(null, false, { message: 'Incorrect username.' });
             }
         }).catch((err)=>{
             cb(err);
@@ -86,7 +86,7 @@ passport.use(new LocalStrategy(
 
 
 passport.serializeUser<any,any>((req,user,done)=>{
-    done(null,user)
+    done(undefined,user)
 })
 
 passport.deserializeUser((id,done)=>{

@@ -5,8 +5,9 @@ import {IWorship, Worship} from '../schemas/WorshipSchema';
 export const router = express.Router();
 
 router.route('/')
+
 .get((req:Request,res:Response)=>{
-    console.log("service route working");
+    console.log(req.cookies);
     Worship.find({},(err:Error,doc:IWorship[])=>{
         res.send(JSON.stringify(doc));
     })

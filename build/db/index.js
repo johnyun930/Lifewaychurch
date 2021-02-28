@@ -6,8 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.db = void 0;
 var mongoose_1 = __importDefault(require("mongoose"));
 exports.db = function () {
-    mongoose_1.default.connect(process.env.DB_PORT, { useNewUrlParser: true, useUnifiedTopology: true })
-        .then(function () { return console.log("Connected to MongoDB"); }).catch(function () {
-        throw new Error("Mongo DB Error");
+    mongoose_1.default.connect("mongodb://localhost:27017/" + process.env.DB_NAME, { useNewUrlParser: true, useUnifiedTopology: true }).then(function () {
+        console.log('connect to MongoDB');
+    }).catch(function (err) {
+        console.log(err);
     });
 };
+// mongodb+srv://${process.env.DB_USERNAME}

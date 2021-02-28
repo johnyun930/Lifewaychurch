@@ -23,7 +23,8 @@ exports.User = exports.UserSchema = void 0;
 var mongoose_1 = __importStar(require("mongoose"));
 exports.UserSchema = new mongoose_1.Schema({
     userName: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    hash: { type: String, required: true },
+    salt: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true }

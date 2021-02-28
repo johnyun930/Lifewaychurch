@@ -9,7 +9,7 @@ var WorshipSchema_1 = require("../schemas/WorshipSchema");
 exports.router = express_1.default.Router();
 exports.router.route('/')
     .get(function (req, res) {
-    console.log("service route working");
+    console.log(req.cookies);
     WorshipSchema_1.Worship.find({}, function (err, doc) {
         res.send(JSON.stringify(doc));
     });

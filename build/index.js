@@ -31,7 +31,7 @@ app.use(express_session_1.default({
     resave: false,
     saveUninitialized: true,
     store: connect_mongo_1.default.create({
-        mongoUrl: "mongodb://localhost:27017/" + process.env.DB_NAME,
+        mongoUrl: "mongodb+srv://" + process.env.DB_USERNAME + ":" + process.env.DB_PASSWORD + "@cluster0.umkpc.mongodb.net/" + process.env.DB_NAME,
         crypto: {
             secret: process.env.SECRET
         },

@@ -27,7 +27,7 @@ app.use(session({
     resave: false,
     saveUninitialized:true,
     store: MongoStore.create({
-        mongoUrl: `mongodb://localhost:27017/${process.env.DB_NAME}`,
+        mongoUrl: `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSOWRD}cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`,
         crypto: {
             secret: process.env.SECRET!
           },

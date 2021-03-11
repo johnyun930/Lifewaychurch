@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = exports.UserSchema = void 0;
+exports.Session = exports.User = exports.SessionSchema = exports.UserSchema = void 0;
 var mongoose_1 = __importStar(require("mongoose"));
 exports.UserSchema = new mongoose_1.Schema({
     userName: { type: String, required: true, unique: true },
@@ -27,6 +27,23 @@ exports.UserSchema = new mongoose_1.Schema({
     salt: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    email: { type: String, required: true, unique: true }
+    email: { type: String, required: true, unique: true },
+    isAdmin: Boolean
+});
+exports.SessionSchema = new mongoose_1.Schema({
+    _id: { type: String, required: true, unique: true },
+    expires: { type: Date, required: true },
+    sessions: {
+        cookie: {
+            maxAge: Number,
+            expires: Date,
+            secure: Boolean,
+            path: String,
+        },
+        passport: {
+            user: String
+        }
+    }
 });
 exports.User = mongoose_1.default.model('User', exports.UserSchema);
+exports.Session = mongoose_1.default.model('Session', exports.SessionSchema);

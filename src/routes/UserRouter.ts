@@ -1,6 +1,7 @@
 import express,{Response,Request} from 'express';
 import {IUser,User} from '../schemas/UserSchema';
 import crypto from 'crypto';
+import { UserData } from './LoginRouter';
 export const router = express.Router();
 
 
@@ -23,6 +24,7 @@ router.route('/')
 .post((req:Request,res:Response)=>{
     const {userName,password,firstName,lastName,email} = req.body;
     const saltHash = genPassword(password);
+    const isAdmin = false;
     const salt = saltHash.salt;
     const hash = saltHash.hash;
     const member: IUser = new User({
@@ -31,13 +33,19 @@ router.route('/')
         hash,
         firstName,
         lastName,
-        email
+        email,
+        isAdmin
     });
     member.save().then(()=>{
-        console.log(member);
-        res.redirect('http://localhost:3000/');
-    }).catch(()=>{
-        console.log("err");
+        const userdata: UserData ={
+            userName,
+            firstName,
+            lastName,
+            isAdmin
+        }
+        res.send(userdata);
+    }).catch((err)=>{
+        res.send({errorMessage:`It is existed ${Object.keys(err.keyValue)}. Please use another ${Object.keys(err.keyValue)}. `});
     });
 })
 .patch((req:Request,res:Response)=>{

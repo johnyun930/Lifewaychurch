@@ -25,6 +25,7 @@ exports.router.route('/')
     .post(function (req, res) {
     var _a = req.body, userName = _a.userName, password = _a.password, firstName = _a.firstName, lastName = _a.lastName, email = _a.email;
     var saltHash = genPassword(password);
+    var isAdmin = false;
     var salt = saltHash.salt;
     var hash = saltHash.hash;
     var member = new UserSchema_1.User({
@@ -33,13 +34,19 @@ exports.router.route('/')
         hash: hash,
         firstName: firstName,
         lastName: lastName,
-        email: email
+        email: email,
+        isAdmin: isAdmin
     });
     member.save().then(function () {
-        console.log(member);
-        res.redirect('http://localhost:3000/');
-    }).catch(function () {
-        console.log("err");
+        var userdata = {
+            userName: userName,
+            firstName: firstName,
+            lastName: lastName,
+            isAdmin: isAdmin
+        };
+        res.send(userdata);
+    }).catch(function (err) {
+        res.send({ errorMessage: "It is existed " + Object.keys(err.keyValue) + ". Please use another " + Object.keys(err.keyValue) + ". " });
     });
 })
     .patch(function (req, res) {

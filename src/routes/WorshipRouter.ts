@@ -7,7 +7,8 @@ export const router = express.Router();
 router.route('/')
 
 .get((req:Request,res:Response)=>{
-    console.log(req.cookies);
+    console.log(req.session.id);
+
     Worship.find({},(err:Error,doc:IWorship[])=>{
         res.send(JSON.stringify(doc));
     })

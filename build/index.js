@@ -17,34 +17,32 @@ var passport_1 = __importDefault(require("passport"));
 var crypto_1 = __importDefault(require("crypto"));
 var express_session_1 = __importDefault(require("express-session"));
 var connect_mongo_1 = __importDefault(require("connect-mongo"));
-var connect_flash_1 = __importDefault(require("connect-flash"));
 var UserSchema_1 = require("./schemas/UserSchema");
 var LocalStrategy = require('passport-local').Strategy;
-var app = express_1.default();
 db_1.db();
+var app = express_1.default();
 app.use(cookie_parser_1.default());
 app.use(express_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(cors_1.default());
+var store = connect_mongo_1.default.create({
+    mongoUrl: "mongodb://localhost:27017/" + process.env.DB_NAME
+});
 app.use(express_session_1.default({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
-    store: connect_mongo_1.default.create({
-        mongoUrl: "mongodb+srv://" + process.env.DB_USERNAME + ":" + process.env.DB_PASSWORD + "@cluster0.umkpc.mongodb.net/" + process.env.DB_NAME,
-        crypto: {
-            secret: process.env.SECRET
-        },
-        ttl: 1209600
-    }),
+    store: store,
+    cookie: {
+        path: '/',
+        httpOnly: true,
+        secure: false,
+        maxAge: 60 * 60 * 1000
+    }
 }));
 app.use(passport_1.default.initialize());
 app.use(passport_1.default.session());
-app.use(connect_flash_1.default());
-app.use('/signup', UserRouter_1.router);
-app.use('/login', LoginRouter_1.router);
-app.use('/worship', WorshipRouter_1.router);
-function validePassword(password, hash, salt) {
+function validPassword(password, hash, salt) {
     var hashVerify = crypto_1.default.pbkdf2Sync(password, salt, parseInt(process.env.LOOP), 64, 'sha512').toString('hex');
     return hash === hashVerify;
 }
@@ -52,10 +50,11 @@ passport_1.default.use(new LocalStrategy({
     usernameField: 'userName',
     passwordField: 'password'
 }, function (userName, password, cb) {
+    console.log("Passport local");
     UserSchema_1.User.findOne({ userName: userName }).then(function (user) {
         if (user) {
             console.log(1);
-            var isValid = validePassword(password, user.hash, user.salt);
+            var isValid = validPassword(password, user.hash, user.salt);
             if (isValid) {
                 console.log(2);
                 return cb(null, user);
@@ -73,15 +72,37 @@ passport_1.default.use(new LocalStrategy({
         cb(err);
     });
 }));
-passport_1.default.serializeUser(function (req, user, done) {
-    done(undefined, user);
+passport_1.default.serializeUser(function (user, done) {
+    console.log("serializeUser", user);
+    done(null, user.userName);
 });
-passport_1.default.deserializeUser(function (id, done) {
-    UserSchema_1.User.findById(id, function (err, user) {
-        done(err, user.id);
+passport_1.default.deserializeUser(function (userName, done) {
+    console.log("deserializeUser", userName);
+    UserSchema_1.User.findOne({ userName: userName }, function (err, user) {
+        console.log("hello");
+        done(err, user);
     });
 });
+app.use('/signup', UserRouter_1.router);
+app.use('/login', LoginRouter_1.router);
+app.use('/worship', WorshipRouter_1.router);
 app.get('/', function (req, res) {
+    var session = Object.values(req.cookies)[0];
+    if (session) {
+        store.get(session, function (err, session) {
+            console.log(session);
+        });
+    }
+});
+app.get('/logout', function (req, res) {
+    console.log("hello");
+    var session = Object.values(req.cookies)[0];
+    console.log(session);
+    store.destroy(session, function (err) {
+        if (err) {
+            throw err;
+        }
+    });
 });
 app.listen(process.env.PORT, function () {
     console.log("app is listening on Port 8000");

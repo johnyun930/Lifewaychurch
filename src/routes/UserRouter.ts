@@ -1,7 +1,6 @@
 import express,{Response,Request} from 'express';
 import {IUser,User} from '../schemas/UserSchema';
 import crypto from 'crypto';
-import passport from 'passport';
 import {  UserData } from './LoginRouter';
 export const router = express.Router();
 

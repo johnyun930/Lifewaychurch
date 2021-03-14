@@ -3,28 +3,31 @@ dotenv.config();
 import express, {Request,response,Response} from 'express';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import {db, connection } from './db';
+import {db} from './db';
 import cors from 'cors';
 import  { router as UserRouter }  from './routes/UserRouter';
 import {router as LoginRouter} from './routes/LoginRouter';
 import {router as WorshipRouter} from './routes/WorshipRouter';
 import passport from 'passport';
 import crypto from 'crypto';
-import session, { Session } from 'express-session';
+import session from 'express-session';
 import  MongoStore  from 'connect-mongo';
-import flash from 'connect-flash';
+import {UserData} from './routes/LoginRouter';
 import { IUser, User } from './schemas/UserSchema';
-import { Model, Mongoose } from 'mongoose';
-import mongoose from 'mongoose';
 const LocalStrategy = require('passport-local').Strategy;
 db();
+const corsOptions ={
+    origin:process.env.ORIGIN, 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
 const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended:true}));
-app.use(cors());
+app.use(cors(corsOptions));
 const store = MongoStore.create({
-    mongoUrl: `mongodb://localhost:27017/${process.env.DB_NAME}`
+    mongoUrl: `mongodb+srv://${process.env.DB_USERNAME+":"+process.env.DB_PASSWORD}@cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`
 })
 app.use(session({
    
@@ -84,16 +87,20 @@ passport.use(new LocalStrategy(
 
 
 
-passport.serializeUser<any,any>((user,done:any)=>{
-    console.log("serializeUser",user);
-    done(null,user.userName);
+passport.serializeUser<any,any>((user:UserData,done:any)=>{
+    const {userName,firstName,lastName,isAdmin} = user;
+    done(null,{
+        userName,
+        firstName,
+        lastName,
+        isAdmin
+    });
 })
 
-passport.deserializeUser((userName:string,done)=>{
-    console.log("deserializeUser",userName);
+passport.deserializeUser((user:UserData,done)=>{
+    console.log("deserializeUser",user);
 
-    User.findOne({userName},(err: Error, user:IUser)=>{
-        console.log("hello");
+    User.findOne({userName:user.userName},(err: Error, user:IUser)=>{
         done(err, user);
     })
 });
@@ -102,24 +109,21 @@ app.use('/login',LoginRouter);
 app.use('/worship',WorshipRouter);
 
 app.get('/',(req:Request,res:Response) =>{
-   const session =Object.values<string>(req.cookies)[0]
-    if(session){
-        store.get(session,(err:Error,session)=>{
-            console.log(session);
-        })
-
-    }
+   if(req.session){
+        res.send(req.session);
+   }else{
+       res.send();
+   }
 });
 
 app.get('/logout',(req:Request,res:Response)=>{
-    console.log("hello");
-    const session =Object.values<string>(req.cookies)[0];
-    console.log(session);
-    store.destroy(session,(err)=>{
+    req.session.destroy((err)=>{
         if(err){
-            throw err;
+            throw err
+        }else{
+            res.send({message:"Successfully logged out"});
         }
-});
+    });
 });
 
 

@@ -22,7 +22,7 @@ exports.router.route('/')
         console.log(doc);
     });
 })
-    .post(function (req, res) {
+    .post(function (req, res, next) {
     var _a = req.body, userName = _a.userName, password = _a.password, firstName = _a.firstName, lastName = _a.lastName, email = _a.email;
     var saltHash = genPassword(password);
     var isAdmin = false;
@@ -38,14 +38,21 @@ exports.router.route('/')
         isAdmin: isAdmin
     });
     member.save().then(function () {
-        var userdata = {
-            userName: userName,
-            firstName: firstName,
-            lastName: lastName,
-            isAdmin: isAdmin
+        console.log("successto save");
+        var userData = {
+            userName: member.userName,
+            firstName: member.firstName,
+            lastName: member.lastName,
+            isAdmin: member.isAdmin,
         };
-        res.send(userdata);
-    }).catch(function (err) {
+        req.logIn(member, function (err) {
+            if (err) {
+                return next(err);
+            }
+            return res.send(userData);
+        });
+    })
+        .catch(function (err) {
         res.send({ errorMessage: "It is existed " + Object.keys(err.keyValue) + ". Please use another " + Object.keys(err.keyValue) + ". " });
     });
 })

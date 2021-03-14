@@ -20,13 +20,18 @@ var connect_mongo_1 = __importDefault(require("connect-mongo"));
 var UserSchema_1 = require("./schemas/UserSchema");
 var LocalStrategy = require('passport-local').Strategy;
 db_1.db();
+var corsOptions = {
+    origin: process.env.ORIGIN,
+    credentials: true,
+    optionSuccessStatus: 200
+};
 var app = express_1.default();
 app.use(cookie_parser_1.default());
 app.use(express_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
-app.use(cors_1.default());
+app.use(cors_1.default(corsOptions));
 var store = connect_mongo_1.default.create({
-    mongoUrl: "mongodb://localhost:27017/" + process.env.DB_NAME
+    mongoUrl: "mongodb+srv://" + (process.env.DB_USERNAME + ":" + process.env.DB_PASSWORD) + "@cluster0.umkpc.mongodb.net/" + process.env.DB_NAME
 });
 app.use(express_session_1.default({
     secret: process.env.SECRET,
@@ -73,13 +78,17 @@ passport_1.default.use(new LocalStrategy({
     });
 }));
 passport_1.default.serializeUser(function (user, done) {
-    console.log("serializeUser", user);
-    done(null, user.userName);
+    var userName = user.userName, firstName = user.firstName, lastName = user.lastName, isAdmin = user.isAdmin;
+    done(null, {
+        userName: userName,
+        firstName: firstName,
+        lastName: lastName,
+        isAdmin: isAdmin
+    });
 });
-passport_1.default.deserializeUser(function (userName, done) {
-    console.log("deserializeUser", userName);
-    UserSchema_1.User.findOne({ userName: userName }, function (err, user) {
-        console.log("hello");
+passport_1.default.deserializeUser(function (user, done) {
+    console.log("deserializeUser", user);
+    UserSchema_1.User.findOne({ userName: user.userName }, function (err, user) {
         done(err, user);
     });
 });
@@ -87,20 +96,20 @@ app.use('/signup', UserRouter_1.router);
 app.use('/login', LoginRouter_1.router);
 app.use('/worship', WorshipRouter_1.router);
 app.get('/', function (req, res) {
-    var session = Object.values(req.cookies)[0];
-    if (session) {
-        store.get(session, function (err, session) {
-            console.log(session);
-        });
+    if (req.session) {
+        res.send(req.session);
+    }
+    else {
+        res.send();
     }
 });
 app.get('/logout', function (req, res) {
-    console.log("hello");
-    var session = Object.values(req.cookies)[0];
-    console.log(session);
-    store.destroy(session, function (err) {
+    req.session.destroy(function (err) {
         if (err) {
             throw err;
+        }
+        else {
+            res.send({ message: "Successfully logged out" });
         }
     });
 });

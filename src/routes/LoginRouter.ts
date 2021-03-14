@@ -9,13 +9,11 @@ export interface UserData {
   firstName: string
   lastName: string
   isAdmin: boolean
-  sessionId: string
-  cookie: Cookie
 
 }
 
 router.post('/',function(req, res, next) {
-  console.log("Session id", req.session.id);
+  console.log("Session id", req.body);
     passport.authenticate('local', function(err, user:IUser, info) {
       if (err) { return next(err); }
       if(user){
@@ -25,8 +23,6 @@ router.post('/',function(req, res, next) {
           firstName: user.firstName,
           lastName: user.lastName,
           isAdmin: user.isAdmin,
-          sessionId: req.session.id,
-          cookie: req.session.cookie
         }
         
         req.logIn(user, function(err) {

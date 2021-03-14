@@ -1,7 +1,8 @@
 import express,{Response,Request} from 'express';
 import {IUser,User} from '../schemas/UserSchema';
 import crypto from 'crypto';
-import { UserData } from './LoginRouter';
+import passport from 'passport';
+import {  UserData } from './LoginRouter';
 export const router = express.Router();
 
 
@@ -21,7 +22,7 @@ router.route('/')
         console.log(doc);
     })
 })
-.post((req:Request,res:Response)=>{
+.post((req:Request,res:Response,next)=>{
     const {userName,password,firstName,lastName,email} = req.body;
     const saltHash = genPassword(password);
     const isAdmin = false;
@@ -37,14 +38,22 @@ router.route('/')
         isAdmin
     });
     member.save().then(()=>{
-        const userdata: UserData ={
-            userName,
-            firstName,
-            lastName,
-            isAdmin
-        }
-        res.send(userdata);
-    }).catch((err)=>{
+        console.log("successto save");
+              let userData: UserData = {
+                userName: member.userName,
+                firstName: member.firstName,
+                lastName: member.lastName,
+                isAdmin: member.isAdmin,
+              }
+              
+              req.logIn(member, function(err) {
+                  if (err) { return next(err); }
+                  return res.send(userData);
+                });
+      
+            }
+        )
+       .catch((err)=>{
         res.send({errorMessage:`It is existed ${Object.keys(err.keyValue)}. Please use another ${Object.keys(err.keyValue)}. `});
     });
 })

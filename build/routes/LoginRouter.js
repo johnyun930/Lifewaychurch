@@ -8,7 +8,7 @@ var express_1 = __importDefault(require("express"));
 var passport_1 = __importDefault(require("passport"));
 exports.router = express_1.default.Router();
 exports.router.post('/', function (req, res, next) {
-    console.log("Session id", req.session.id);
+    console.log("Session id", req.body);
     passport_1.default.authenticate('local', function (err, user, info) {
         if (err) {
             return next(err);
@@ -20,8 +20,6 @@ exports.router.post('/', function (req, res, next) {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 isAdmin: user.isAdmin,
-                sessionId: req.session.id,
-                cookie: req.session.cookie
             };
             req.logIn(user, function (err) {
                 if (err) {

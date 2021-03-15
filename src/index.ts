@@ -17,7 +17,7 @@ import { IUser, User } from './schemas/UserSchema';
 const LocalStrategy = require('passport-local').Strategy;
 db();
 const corsOptions ={
-    origin:"https://localhost.ga", 
+    origin:process.env.ORIGIN,
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }

@@ -39,11 +39,12 @@ app.use(express_session_1.default({
     saveUninitialized: true,
     store: store,
     cookie: {
-        domain: process.env.ORIGIN,
+        domain: '.lifewaygen.ga',
         path: '/',
         httpOnly: true,
         secure: true,
-        maxAge: 60 * 60 * 1000
+        maxAge: 60 * 60 * 1000,
+        sameSite: 'none'
     }
 }));
 app.use(passport_1.default.initialize());

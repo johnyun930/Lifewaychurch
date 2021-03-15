@@ -17,7 +17,7 @@ import { IUser, User } from './schemas/UserSchema';
 const LocalStrategy = require('passport-local').Strategy;
 db();
 const corsOptions ={
-    origin:process.env.ORIGIN, 
+    origin:"https://lifewayge.ga", 
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
@@ -110,6 +110,7 @@ app.use('/login',LoginRouter);
 app.use('/worship',WorshipRouter);
 
 app.get('/',(req:Request,res:Response) =>{
+    console.log("first");
    if(req.session){
         res.send(req.session);
    }else{

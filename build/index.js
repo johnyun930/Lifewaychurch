@@ -42,7 +42,7 @@ app.use(express_session_1.default({
         domain: process.env.ORIGIN,
         path: '/',
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: 60 * 60 * 1000
     }
 }));

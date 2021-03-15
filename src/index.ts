@@ -17,7 +17,7 @@ import { IUser, User } from './schemas/UserSchema';
 const LocalStrategy = require('passport-local').Strategy;
 db();
 const corsOptions ={
-    origin:process.env.ORIGIN,
+    origin:"https://lifewaygen.ga",
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }

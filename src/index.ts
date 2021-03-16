@@ -36,10 +36,9 @@ app.use(session({
     saveUninitialized:true,
     store: store,
     cookie: {
-        domain: 'lifewaygen.ga',
         path: '/',
         httpOnly:true,
-        secure: true,
+        secure: false,
         maxAge: 60*60*1000,
     }
 }));

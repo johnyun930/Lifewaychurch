@@ -41,7 +41,6 @@ app.use(session({
         httpOnly:true,
         secure: true,
         maxAge: 60*60*1000,
-        sameSite:'lax'
     }
 }));
 app.use(passport.initialize());

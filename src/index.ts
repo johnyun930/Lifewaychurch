@@ -36,12 +36,11 @@ app.use(session({
     saveUninitialized:true,
     store: store,
     cookie: {
-        domain:'lifewaygen.ga',
+        domain:'https://lifewaygen.ga',
         path: '/',
         httpOnly:true,
-        secure: true,
+        secure: false,
         maxAge: 60*60*1000,
-        sameSite: false
 }));
 app.use(passport.initialize());
 app.use(passport.session());

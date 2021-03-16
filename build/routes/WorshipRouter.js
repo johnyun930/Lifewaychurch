@@ -28,7 +28,6 @@ exports.router.route('/')
         endingHymm: endingHymm
     });
     service.save().then(function (result) {
-        res.redirect('http://localhost:3000/worship');
     }).catch(function (err) {
         console.log(err);
     });

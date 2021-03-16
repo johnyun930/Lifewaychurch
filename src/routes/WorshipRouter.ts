@@ -29,7 +29,7 @@ router.route('/')
     });
 
     service.save().then((result)=>{
-        res.redirect('http://localhost:3000/worship');
+        
     }).catch((err)=>{
         console.log(err);
     })

@@ -42,8 +42,8 @@ app.use(express_session_1.default({
         domain: '.lifewaygen.ga',
         path: '/',
         httpOnly: true,
-        secure: false,
-        maxAge: 60 * 60 * 1000,
+        secure: true,
+        maxAge: 60 * 60 * 1000
     }
 }));
 app.use(passport_1.default.initialize());

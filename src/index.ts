@@ -30,7 +30,6 @@ const store = MongoStore.create({
     mongoUrl: `mongodb+srv://${process.env.DB_USERNAME+":"+process.env.DB_PASSWORD}@cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`
 })
 app.use(session({
-   
     secret: process.env.SECRET!,
     resave: false,
     saveUninitialized:true,
@@ -39,9 +38,9 @@ app.use(session({
         domain:'.lifewaygen.ga',
         path: '/',
         httpOnly:true,
-        secure: false,
-        maxAge: 60*60*1000,
-}));
+        secure: true,
+        maxAge: 60*60*1000
+}}));
 app.use(passport.initialize());
 app.use(passport.session());
 

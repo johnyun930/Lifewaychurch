@@ -36,7 +36,7 @@ app.use(session({
     saveUninitialized:true,
     store: store,
     cookie: {
-        domain:'https://lifewaygen.ga',
+        domain:'.lifewaygen.ga',
         path: '/',
         httpOnly:true,
         secure: false,

@@ -38,7 +38,7 @@ app.use(session({
         domain:'.lifewaygen.ga',
         path: '/',
         httpOnly:true,
-        secure: true,
+        secure: false,
         maxAge: 60*60*1000
 }}));
 app.use(passport.initialize());

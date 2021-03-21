@@ -1,4 +1,3 @@
-import { json } from 'body-parser';
 import express, {Request,Response} from 'express';
 import {IWorship, Worship} from '../schemas/WorshipSchema';
 
@@ -34,9 +33,14 @@ router.route('/')
         console.log(err);
     })
 });
-
-router.get('/:id',(req:Request,res:Response)=>{
+router.route('/:id').
+get((req:Request,res:Response)=>{
     Worship.findById(req.params.id,(err:Error,doc:IWorship)=>{
-        res.send(JSON.stringify(doc));
-    })
+        res.send(doc);
+    });
 })
+.delete((req:Request,res:Response)=>{
+    Worship.findByIdAndDelete(req.params.id).then(()=>{
+        res.send({message:"Successfully deleted"});
+    });
+    });

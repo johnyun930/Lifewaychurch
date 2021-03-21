@@ -1,33 +1,43 @@
 import dotenv from 'dotenv'
 dotenv.config();
-import express, {Request,response,Response} from 'express';
+import express, {Request,Response} from 'express';
 import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
+import multer from 'multer';
 import {db} from './db';
 import cors from 'cors';
 import  { router as UserRouter }  from './routes/UserRouter';
 import {router as LoginRouter} from './routes/LoginRouter';
 import {router as WorshipRouter} from './routes/WorshipRouter';
+import {router as BibleStudyRouter} from './routes/BibleStudyRouter';
+import {router as QTRouter} from './routes/QTRouter';
+import {router as ChildSchoolRouter} from './routes/ChildSchoolRouter';
+import {router as BulletenBoardRouter} from './routes/BulletenBoardRouter';
+
+
 import passport from 'passport';
 import crypto from 'crypto';
 import session from 'express-session';
 import  MongoStore  from 'connect-mongo';
 import {UserData} from './routes/LoginRouter';
 import { IUser, User } from './schemas/UserSchema';
+export const upload = multer({dest:'uploads/'});
 const LocalStrategy = require('passport-local').Strategy;
 db();
 const corsOptions ={
-    origin:`https://${process.env.ORIGIN}`,
+    // origin:`https://${process.env.ORIGIN}`,
+     origin:`http://${process.env.LOCAL}`,
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
 const app = express();
 app.use(cookieParser());
+app.use(express.urlencoded({extended:true}));
 app.use(express.json());
-app.use(bodyParser.urlencoded({extended:true}));
 app.use(cors(corsOptions));
 const store = MongoStore.create({
-    mongoUrl: `mongodb+srv://${process.env.DB_USERNAME+":"+process.env.DB_PASSWORD}@cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`
+    // mongoUrl: `mongodb+srv://${process.env.DB_USERNAME+":"+process.env.DB_PASSWORD}@cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`
+    mongoUrl: `mongodb://localhost:27017/${process.env.DB_NAME}`
+
 })
 app.use(session({
     secret: process.env.SECRET!,
@@ -35,7 +45,8 @@ app.use(session({
     saveUninitialized:true,
     store: store,
     cookie: {
-        domain:'.lifewaygen.ga',
+        // domain:'.lifewaygen.ga',
+         domain:'localhost',
         path: '/',
         httpOnly:true,
         secure: false,
@@ -106,6 +117,11 @@ passport.deserializeUser((user:UserData,done)=>{
 app.use('/signup',UserRouter);
 app.use('/login',LoginRouter);
 app.use('/worship',WorshipRouter);
+app.use('/biblestudy',BibleStudyRouter);
+app.use('/qt',QTRouter);
+app.use('/bulletenboard',BulletenBoardRouter);
+app.use('/childschool',ChildSchoolRouter);
+
 
 app.get('/',(req:Request,res:Response) =>{
     console.log("first");

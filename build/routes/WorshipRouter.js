@@ -32,8 +32,14 @@ exports.router.route('/')
         console.log(err);
     });
 });
-exports.router.get('/:id', function (req, res) {
+exports.router.route('/:id').
+    get(function (req, res) {
     WorshipSchema_1.Worship.findById(req.params.id, function (err, doc) {
-        res.send(JSON.stringify(doc));
+        res.send(doc);
+    });
+})
+    .delete(function (req, res) {
+    WorshipSchema_1.Worship.findByIdAndDelete(req.params.id).then(function () {
+        res.send({ message: "Successfully deleted" });
     });
 });

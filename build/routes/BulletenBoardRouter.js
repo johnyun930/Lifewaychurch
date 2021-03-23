@@ -72,8 +72,14 @@ exports.router.route('/')
         }).sort({ id: -1 }).limit(1);
     });
 });
-exports.router.get('/:id', function (req, res) {
+exports.router.route('/:id').
+    get(function (req, res) {
     PostSchema_1.BulletenBoard.findById(req.params.id, function (err, doc) {
         res.send(doc);
+    });
+})
+    .delete(function (req, res) {
+    PostSchema_1.BulletenBoard.findByIdAndDelete(req.params.id).then(function () {
+        res.send({ message: "Successfully deleted" });
     });
 });

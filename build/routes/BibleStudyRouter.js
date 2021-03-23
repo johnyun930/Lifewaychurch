@@ -7,6 +7,7 @@ exports.router = exports.upload = exports.IsNotice = void 0;
 var express_1 = __importDefault(require("express"));
 var PostSchema_1 = require("../schemas/PostSchema");
 var multer_1 = __importDefault(require("multer"));
+var ReviewSchema_1 = require("../schemas/ReviewSchema");
 var IsNotice;
 (function (IsNotice) {
     IsNotice["false"] = "0";
@@ -79,12 +80,60 @@ exports.router.route('/')
 });
 exports.router.route('/:id').
     get(function (req, res) {
+    console.log("Working");
     PostSchema_1.BibleStudy.findById(req.params.id, function (err, doc) {
         res.send(doc);
     });
 })
     .delete(function (req, res) {
     PostSchema_1.BibleStudy.findByIdAndDelete(req.params.id).then(function () {
-        res.send({ message: "Successfully deleted" });
+        ReviewSchema_1.BibleStudyReview.deleteMany({ postingId: req.params.id }, undefined, function (err) {
+            if (err) {
+                console.log("Fail to delete the all review of the post");
+            }
+            else {
+                res.send({ message: "Successfully deleted" });
+            }
+        });
+    }).catch(function (err) {
+        if (err) {
+            res.send({ errMessage: "Fail to delete post Try Aagin" });
+        }
     });
 });
+exports.router.route('/review')
+    .post(function (req, res) {
+    var _a = req.body, postingId = _a.postingId, reviewer = _a.reviewer, comment = _a.comment;
+    var date = new Date();
+    var review = new ReviewSchema_1.BibleStudyReview({
+        postingId: postingId,
+        reviewer: reviewer,
+        comment: comment,
+        date: date
+    });
+    review.save(function (err, doc) {
+        if (err) {
+            res.send({ errMessage: "Sorry. Please Try Again" });
+        }
+        else {
+            res.send(doc);
+        }
+    });
+});
+exports.router.route("/review/:Id")
+    .get(function (req, res) {
+    ReviewSchema_1.BibleStudyReview.find({ postingId: req.params.Id }, function (err, doc) {
+        res.send(doc);
+    });
+}).delete(function (req, res) {
+    ReviewSchema_1.BibleStudyReview.findByIdAndDelete(req.params.Id, null, function (err) {
+        console.log("hello");
+        if (err) {
+            res.send({ errMessage: "Sorry, fail to delete. Try again" });
+        }
+        else {
+            res.send();
+        }
+    });
+});
+;

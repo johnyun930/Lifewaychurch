@@ -27,9 +27,14 @@ exports.router.route('/')
         videoURL: videoURL,
         endingHymm: endingHymm
     });
-    service.save().then(function (result) {
-    }).catch(function (err) {
-        console.log(err);
+    console.log(service);
+    service.save(function (err, doc) {
+        if (err) {
+            res.send({ errMessage: "Sorry. Please Try Again" });
+        }
+        else {
+            res.send();
+        }
     });
 });
 exports.router.route('/:id').

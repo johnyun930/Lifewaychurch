@@ -26,12 +26,14 @@ router.route('/')
         videoURL,
         endingHymm
     });
-
-    service.save().then((result)=>{
-        
-    }).catch((err)=>{
-        console.log(err);
-    })
+    console.log(service);
+    service.save((err,doc)=>{
+        if(err){
+            res.send({errMessage:"Sorry. Please Try Again"});
+        }else{
+            res.send();
+        }
+    });
 });
 router.route('/:id').
 get((req:Request,res:Response)=>{

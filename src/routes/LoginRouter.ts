@@ -31,9 +31,8 @@ router.post('/',function(req, res, next) {
           });
 
       }else{
-        console.log("/login fail!!!");
         res.send({
-          errorMessage:"Invaild username or password. Please try again"
+          errMessage:"Invaild username or password. Please try again"
         });
       }
     })(req, res, next);

@@ -8,6 +8,7 @@ var express_1 = __importDefault(require("express"));
 var PostSchema_1 = require("../schemas/PostSchema");
 var multer_1 = __importDefault(require("multer"));
 var BibleStudyRouter_1 = require("./BibleStudyRouter");
+var ReviewSchema_1 = require("../schemas/ReviewSchema");
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
         callback(null, "public/QT");
@@ -71,7 +72,19 @@ exports.router.route('/')
             });
         }).sort({ id: -1 }).limit(1);
     });
+}).patch(function (req, res) {
+    var _a = req.body, Id = _a.Id, title = _a.title, bibleText = _a.bibleText, context = _a.context;
+    console.log(Id);
+    PostSchema_1.QT.findByIdAndUpdate(Id, { title: title, bibleText: bibleText, context: context }, { returnOriginal: false }, function (err, doc) {
+        if (err) {
+            res.send({ errMessage: "Sorry, fail to update. Please try again" });
+        }
+        else {
+            res.send(doc);
+        }
+    });
 });
+;
 exports.router.route('/:id').
     get(function (req, res) {
     PostSchema_1.QT.findById(req.params.id, function (err, doc) {
@@ -83,3 +96,50 @@ exports.router.route('/:id').
         res.send({ message: "Successfully deleted" });
     });
 });
+exports.router.route('/review')
+    .post(function (req, res) {
+    var _a = req.body, postingId = _a.postingId, reviewer = _a.reviewer, comment = _a.comment;
+    var date = new Date();
+    var review = new ReviewSchema_1.QTReview({
+        postingId: postingId,
+        reviewer: reviewer,
+        comment: comment,
+        date: date
+    });
+    review.save(function (err, doc) {
+        if (err) {
+            res.send({ errMessage: "Sorry. Please Try Again" });
+        }
+        else {
+            res.send(doc);
+        }
+    });
+}).patch(function (req, res) {
+    var _a = req.body, _id = _a._id, comment = _a.comment;
+    ReviewSchema_1.QTReview.findByIdAndUpdate(_id, { comment: comment }, { returnOriginal: false }, function (err, doc) {
+        if (err) {
+            res.send({ errMessage: "Sorry, fail to update. Please try again" });
+        }
+        else {
+            console.log("patching");
+            res.send(doc);
+        }
+    });
+});
+;
+exports.router.route("/review/:Id")
+    .get(function (req, res) {
+    ReviewSchema_1.QTReview.find({ postingId: req.params.Id }, function (err, doc) {
+        res.send(doc);
+    });
+}).delete(function (req, res) {
+    ReviewSchema_1.QTReview.findByIdAndDelete(req.params.Id, null, function (err) {
+        if (err) {
+            res.send({ errMessage: "Sorry, fail to delete. Try again" });
+        }
+        else {
+            res.send();
+        }
+    });
+});
+;

@@ -77,10 +77,20 @@ exports.router.route('/')
             });
         }).sort({ id: -1 }).limit(1);
     });
+}).patch(function (req, res) {
+    var _a = req.body, Id = _a.Id, title = _a.title, bibleText = _a.bibleText, context = _a.context;
+    console.log(Id);
+    PostSchema_1.BibleStudy.findByIdAndUpdate(Id, { title: title, bibleText: bibleText, context: context }, { returnOriginal: false }, function (err, doc) {
+        if (err) {
+            res.send({ errMessage: "Sorry, fail to update. Please try again" });
+        }
+        else {
+            res.send(doc);
+        }
+    });
 });
 exports.router.route('/:id').
     get(function (req, res) {
-    console.log("Working");
     PostSchema_1.BibleStudy.findById(req.params.id, function (err, doc) {
         res.send(doc);
     });
@@ -119,15 +129,26 @@ exports.router.route('/review')
             res.send(doc);
         }
     });
+}).patch(function (req, res) {
+    var _a = req.body, _id = _a._id, comment = _a.comment;
+    ReviewSchema_1.BibleStudyReview.findByIdAndUpdate(_id, { comment: comment }, { returnOriginal: false }, function (err, doc) {
+        if (err) {
+            res.send({ errMessage: "Sorry, fail to update. Please try again" });
+        }
+        else {
+            console.log("patching");
+            res.send(doc);
+        }
+    });
 });
 exports.router.route("/review/:Id")
     .get(function (req, res) {
     ReviewSchema_1.BibleStudyReview.find({ postingId: req.params.Id }, function (err, doc) {
         res.send(doc);
     });
-}).delete(function (req, res) {
+})
+    .delete(function (req, res) {
     ReviewSchema_1.BibleStudyReview.findByIdAndDelete(req.params.Id, null, function (err) {
-        console.log("hello");
         if (err) {
             res.send({ errMessage: "Sorry, fail to delete. Try again" });
         }
@@ -136,4 +157,3 @@ exports.router.route("/review/:Id")
         }
     });
 });
-;

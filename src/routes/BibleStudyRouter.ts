@@ -1,7 +1,6 @@
 import express, {Request,Response} from 'express';
 import {IPost, BibleStudy, PostSchema} from '../schemas/PostSchema';
 import multer from 'multer';
-import e from 'express';
 import { BibleStudyReview, IReview } from '../schemas/ReviewSchema';
 
 export enum IsNotice {
@@ -84,11 +83,20 @@ router.route('/')
     
    
     
+}).patch((req:Request,res:Response)=>{
+    const {Id,title,bibleText,context} = req.body;
+    console.log(Id);
+    BibleStudy.findByIdAndUpdate(Id,{title,bibleText,context},{returnOriginal:false},(err,doc)=>{
+       if(err){
+           res.send({errMessage: "Sorry, fail to update. Please try again"});
+       }else{
+           res.send(doc);
+       }
+    });
 });
 
 router.route('/:id').
 get((req:Request,res:Response)=>{
-    console.log("Working");
     BibleStudy.findById(req.params.id,(err:Error,doc:IPost)=>{
         res.send(doc);
     });
@@ -128,20 +136,30 @@ router.route('/review')
         }
     });
 
+}).patch((req:Request,res:Response)=>{
+    const {_id,comment} = req.body;
+    BibleStudyReview.findByIdAndUpdate(_id,{comment},{returnOriginal:false},(err,doc)=>{
+       if(err){
+           res.send({errMessage: "Sorry, fail to update. Please try again"});
+       }else{
+           console.log("patching");
+           res.send(doc);
+       }
+    });
 });
-
 router.route("/review/:Id")
 .get((req:Request,res:Response)=>{
     BibleStudyReview.find({postingId:req.params.Id},(err:Error,doc:IReview)=>{
         res.send(doc);
     });
-}).delete((req:Request,res:Response)=>{
+})
+.delete((req:Request,res:Response)=>{
     BibleStudyReview.findByIdAndDelete(req.params.Id,null,(err)=>{
-        console.log("hello");
         if(err){
             res.send({errMessage:"Sorry, fail to delete. Try again"});
         }else{
             res.send();
         }
-    })
-});;
+    });
+})
+

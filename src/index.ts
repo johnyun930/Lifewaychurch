@@ -24,8 +24,8 @@ export const upload = multer({dest:'uploads/'});
 const LocalStrategy = require('passport-local').Strategy;
 db();
 const corsOptions ={
-    // origin:`https://${process.env.ORIGIN}`,
-     origin:`http://${process.env.LOCAL}`,
+    origin:`https://${process.env.ORIGIN}`,
+    //  origin:`http://${process.env.LOCAL}`,
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }

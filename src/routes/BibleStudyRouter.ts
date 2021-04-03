@@ -102,6 +102,8 @@ get((req:Request,res:Response)=>{
     });
 })
 .delete((req:Request,res:Response)=>{
+    console.log("deleting");
+
     BibleStudy.findByIdAndDelete(req.params.id).then(()=>{
         BibleStudyReview.deleteMany({postingId:req.params.id},undefined,(err)=>{
             if(err){

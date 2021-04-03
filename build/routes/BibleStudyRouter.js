@@ -96,6 +96,7 @@ exports.router.route('/:id').
     });
 })
     .delete(function (req, res) {
+    console.log("deleting");
     PostSchema_1.BibleStudy.findByIdAndDelete(req.params.id).then(function () {
         ReviewSchema_1.BibleStudyReview.deleteMany({ postingId: req.params.id }, undefined, function (err) {
             if (err) {

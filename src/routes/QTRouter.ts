@@ -142,7 +142,7 @@ get((req:Request,res:Response)=>{
             if(err){
                 res.send({errMessage:"Sorry, fail to delete. Try again"});
             }else{
-                res.send();
+                console.log(req.session);
             }
         })
     });;

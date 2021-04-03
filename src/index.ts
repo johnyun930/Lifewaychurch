@@ -24,8 +24,8 @@ export const upload = multer({dest:'uploads/'});
 const LocalStrategy = require('passport-local').Strategy;
 db();
 const corsOptions ={
-    origin:`https://${process.env.ORIGIN}`,
-    //  origin:`http://${process.env.LOCAL}`,
+    // origin:`https://${process.env.ORIGIN}`,
+     origin:`http://${process.env.LOCAL}`,
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
@@ -56,7 +56,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-function validPassword(password: string, hash:string, salt:string):boolean{
+export function validPassword(password: string, hash:string, salt:string):boolean{
     const hashVerify: string = crypto.pbkdf2Sync(password,salt,parseInt(process.env.LOOP!),64,'sha512').toString('hex');
     return hash === hashVerify;
 }
@@ -124,8 +124,8 @@ app.use('/childschool',ChildSchoolRouter);
 
 
 app.get('/',(req:Request,res:Response) =>{
-    console.log("first");
    if(req.session){
+       console.log(req.session.id);
         res.send(req.session);
    }else{
        res.send();

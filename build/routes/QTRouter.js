@@ -138,7 +138,7 @@ exports.router.route("/review/:Id")
             res.send({ errMessage: "Sorry, fail to delete. Try again" });
         }
         else {
-            res.send();
+            console.log(req.session);
         }
     });
 });

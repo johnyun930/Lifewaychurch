@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.upload = void 0;
+exports.validPassword = exports.upload = void 0;
 var dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 var express_1 = __importDefault(require("express"));
@@ -27,8 +27,8 @@ exports.upload = multer_1.default({ dest: 'uploads/' });
 var LocalStrategy = require('passport-local').Strategy;
 db_1.db();
 var corsOptions = {
-    origin: "https://" + process.env.ORIGIN,
-    //  origin:`http://${process.env.LOCAL}`,
+    // origin:`https://${process.env.ORIGIN}`,
+    origin: "http://" + process.env.LOCAL,
     credentials: true,
     optionSuccessStatus: 200
 };
@@ -61,6 +61,7 @@ function validPassword(password, hash, salt) {
     var hashVerify = crypto_1.default.pbkdf2Sync(password, salt, parseInt(process.env.LOOP), 64, 'sha512').toString('hex');
     return hash === hashVerify;
 }
+exports.validPassword = validPassword;
 passport_1.default.use(new LocalStrategy({
     usernameField: 'userName',
     passwordField: 'password'
@@ -110,8 +111,8 @@ app.use('/qt', QTRouter_1.router);
 app.use('/bulletenboard', BulletenBoardRouter_1.router);
 app.use('/childschool', ChildSchoolRouter_1.router);
 app.get('/', function (req, res) {
-    console.log("first");
     if (req.session) {
+        console.log(req.session.id);
         res.send(req.session);
     }
     else {

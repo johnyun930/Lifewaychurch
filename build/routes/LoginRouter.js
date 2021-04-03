@@ -6,6 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
 var express_1 = __importDefault(require("express"));
 var passport_1 = __importDefault(require("passport"));
+var PostSchema_1 = require("../schemas/PostSchema");
+var ReviewSchema_1 = require("../schemas/ReviewSchema");
+var UserSchema_1 = require("../schemas/UserSchema");
 exports.router = express_1.default.Router();
 exports.router.post('/', function (req, res, next) {
     console.log("Session id", req.body);
@@ -34,4 +37,27 @@ exports.router.post('/', function (req, res, next) {
             });
         }
     })(req, res, next);
+});
+exports.router.delete('/:id', function (req, res) {
+    console.log("Account is deleting");
+    var userName = req.params.id;
+    UserSchema_1.User.findOneAndDelete({ userName: userName }, { useFindAndModify: false }, function (err, doc) {
+        if (err) {
+            console.log(err);
+        }
+        else {
+            PostSchema_1.BulletenBoard.deleteMany({ composer: userName });
+            ReviewSchema_1.BulletenBoardReview.deleteMany({ reviewer: userName });
+            ReviewSchema_1.BibleStudyReview.deleteMany({ reviewer: userName });
+            PostSchema_1.QT.deleteMany({ composer: userName });
+            ReviewSchema_1.QTReview.deleteMany({ reviewer: userName });
+            ReviewSchema_1.ChildSchoolReview.deleteMany({ reviewer: userName });
+            req.session.destroy(function (err) {
+                if (err) {
+                    throw err;
+                }
+            });
+            res.send({ message: "Deleted the account successfully." });
+        }
+    });
 });

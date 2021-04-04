@@ -20,6 +20,8 @@ import session from 'express-session';
 import  MongoStore  from 'connect-mongo';
 import {UserData} from './routes/LoginRouter';
 import { IUser, User } from './schemas/UserSchema';
+import { BibleStudy, BulletenBoard, ChildSchool, QT } from './schemas/PostSchema';
+import { BibleStudyReview, BulletenBoardReview, ChildSchoolReview, QTReview } from './schemas/ReviewSchema';
 export const upload = multer({dest:'uploads/'});
 const LocalStrategy = require('passport-local').Strategy;
 db();
@@ -140,6 +142,61 @@ app.get('/logout',(req:Request,res:Response)=>{
             res.send({message:"Successfully logged out"});
         }
     });
+});
+
+app.get('/postcount/:username',async (req:Request,res:Response)=>{
+    const composer = req.params.username;
+    const reviewer = composer
+    
+   const numofBS = await BibleStudy.countDocuments({composer},(err)=>{
+    if(err){
+        throw err;
+    }
+    });
+
+    const numofBSReview = await BibleStudyReview.countDocuments({reviewer},(err)=>{
+        if(err){
+            throw err;
+        }
+    });
+    const numofQT = await QT.countDocuments({composer},(err)=>{
+        if(err){
+            throw err;
+        }
+        });
+    
+        const numofQTReview = await QTReview.countDocuments({reviewer},(err)=>{
+            if(err){
+                throw err;
+            }
+        });
+
+        const numofBTB = await BulletenBoard.countDocuments({composer},(err)=>{
+            if(err){
+                throw err;
+            }
+            });
+        
+            const numofBTBReview = await BulletenBoardReview.countDocuments({reviewer},(err)=>{
+                if(err){
+                    throw err;
+                }
+            });
+
+            const numofCS = await ChildSchool.countDocuments({composer},(err)=>{
+                if(err){
+                    throw err;
+                }
+                });
+            
+                const numofCSReview = await ChildSchoolReview.countDocuments({reviewer},(err)=>{
+                    if(err){
+                        throw err;
+                    }
+                });
+            const totalPost = numofBS + numofBTB + numofCS + numofQT;
+            res.send({numofBS,numofBSReview,numofQT,numofQTReview,numofCS,numofCSReview,numofBTB,numofBTBReview,totalPost});
+
 });
 
 

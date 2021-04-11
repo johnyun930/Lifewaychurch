@@ -41,19 +41,16 @@ router.post('/',function(req, res, next) {
     })(req, res, next);
 });
 
-router.delete('/:id',(req,res)=>{
+router.delete('/:id',async (req,res)=>{
   console.log("Account is deleting");
   const userName = req.params.id;
-  User.findOneAndDelete({userName},{useFindAndModify:false},(err,doc)=>{
+  User.findOneAndDelete({userName},{useFindAndModify:false},async (err,doc)=>{
     if(err){
       console.log(err);
     }else{
-       BulletenBoard.deleteMany({composer:userName});
-      BulletenBoardReview.deleteMany({reviewer:userName});
-      BibleStudyReview.deleteMany({reviewer:userName});
-      QT.deleteMany({composer:userName});
-      QTReview.deleteMany({reviewer:userName});
-      ChildSchoolReview.deleteMany({reviewer:userName});
+
+        removeAllData(userName).then((value)=>{
+         console.log(value);
       req.session.destroy((err)=>{
         if(err){
                   throw err
@@ -63,5 +60,20 @@ router.delete('/:id',(req,res)=>{
 
       res.send({message: "Deleted the account successfully."});
     }
+            
+        ).catch((err)=>{
+          if(err){
+            throw err;
+          }
+        })
+      } 
   })
-})
+});
+
+function removeAllData(userName:string){
+      return Promise.all([BulletenBoard.deleteMany({composer:userName}),BulletenBoardReview.deleteMany({reviewer:userName}), BibleStudyReview.deleteMany({reviewer:userName}),
+        QT.deleteMany({composer:userName}),QTReview.deleteMany({reviewer:userName}),ChildSchoolReview.deleteMany({reviewer:userName})
+      ]).then(docs =>{
+        console.log(docs);
+      })
+}

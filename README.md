@@ -9,7 +9,7 @@ ___
  You need to set up 3 things.
  - Client-side  ([Github LifewayGen Church Client](https://github.com/johnyun930/LifewayChurch_client))
  - Server side  ([Github LifewayGen Church Server](https://github.com/johnyun930/Lifewaychurch))
- - Mongo DB ([MongoDBr](https://www.mongodb.com/)
+ - Mongo DB ([MongoDB](https://www.mongodb.com/)
 
 Start both client and server
 ```

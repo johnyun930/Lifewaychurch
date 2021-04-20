@@ -215,7 +215,7 @@ router.route("/findpassword")
                 from: "noreply@lifewaygen.ga",
                 to:email,
                 subject: "Authenticate your Email",
-                text: `Hello, please click this link to change the password: http://localhost:3000/auth/reset/${token}`,
+                text: `Hello, please click this link to change the password: https://lifewaygen.ga/auth/reset/${token}`,
             };
 
             

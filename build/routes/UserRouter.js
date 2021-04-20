@@ -203,7 +203,7 @@ exports.router.route("/findpassword")
                     from: "noreply@lifewaygen.ga",
                     to: email,
                     subject: "Authenticate your Email",
-                    text: "Hello, please click this link to change the password: http://localhost:3000/auth/reset/" + token_1,
+                    text: "Hello, please click this link to change the password: https://lifewaygen.ga/auth/reset/" + token_1,
                 };
                 var result = mailer_1.default.sendMail(mailoptions, function (error, responses) {
                     if (err) {

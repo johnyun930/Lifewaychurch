@@ -116,7 +116,7 @@ passport.deserializeUser((user:UserData,done)=>{
         done(err, user);
     })
 });
-app.use('/signup',UserRouter);
+app.use('/auth',UserRouter);
 app.use('/login',LoginRouter);
 app.use('/worship',WorshipRouter);
 app.use('/biblestudy',BibleStudyRouter);

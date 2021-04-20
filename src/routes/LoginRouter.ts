@@ -14,6 +14,19 @@ export interface UserData {
   isAdmin: boolean
 
 }
+router.post('/user',(req:Request,res:Response)=>{
+    const {userName}=  req.body
+
+    User.findOne({userName},(err:Error,doc:IUser)=>{
+      if(doc){
+        res.send(true);
+      }else{
+        res.send(false);
+      }
+
+    })
+
+})
 
 router.post('/',function(req, res, next) {
   console.log("Session id", req.body);

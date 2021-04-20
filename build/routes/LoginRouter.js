@@ -46,6 +46,17 @@ var PostSchema_1 = require("../schemas/PostSchema");
 var ReviewSchema_1 = require("../schemas/ReviewSchema");
 var UserSchema_1 = require("../schemas/UserSchema");
 exports.router = express_1.default.Router();
+exports.router.post('/user', function (req, res) {
+    var userName = req.body.userName;
+    UserSchema_1.User.findOne({ userName: userName }, function (err, doc) {
+        if (doc) {
+            res.send(true);
+        }
+        else {
+            res.send(false);
+        }
+    });
+});
 exports.router.post('/', function (req, res, next) {
     console.log("Session id", req.body);
     passport_1.default.authenticate('local', function (err, user, info) {

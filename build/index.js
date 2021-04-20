@@ -141,7 +141,7 @@ passport_1.default.deserializeUser(function (user, done) {
         done(err, user);
     });
 });
-app.use('/signup', UserRouter_1.router);
+app.use('/auth', UserRouter_1.router);
 app.use('/login', LoginRouter_1.router);
 app.use('/worship', WorshipRouter_1.router);
 app.use('/biblestudy', BibleStudyRouter_1.router);

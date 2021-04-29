@@ -8,13 +8,13 @@ var express_1 = __importDefault(require("express"));
 var UserSchema_1 = require("../schemas/UserSchema");
 var crypto_1 = __importDefault(require("crypto"));
 var multer_1 = __importDefault(require("multer"));
-var __1 = require("../");
+var index_1 = require("../../index");
 var mailer_1 = __importDefault(require("../auth/mailer"));
 var Auth_1 = require("../schemas/Auth");
 exports.router = express_1.default.Router();
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, "./build/public/profile");
+        callback(null, "public/profile");
     },
     filename: function (req, file, callback) {
         console.log(req.body);
@@ -40,7 +40,7 @@ exports.router.post('/profile', function (req, res) {
             return;
         }
         var userName = req.body.userName;
-        var profile = "/profile/" + req.body.userName + ".png";
+        var profile = req.file.path;
         UserSchema_1.User.updateOne({ userName: userName }, { profile: profile }, undefined, function (err) {
             if (err) {
                 console.log(err);
@@ -55,14 +55,14 @@ exports.router.route('/')
     Auth_1.Token.findOne({ email: email, code: code }, function (err, doc) {
         if (doc) {
             var saltHash = genPassword(password);
-            var level = 1;
+            var level = 0;
             var salt = saltHash.salt;
             var hash = saltHash.hash;
             var member_1 = new UserSchema_1.User({
                 userName: userName,
                 salt: salt,
                 hash: hash,
-                profile: '/profile/user.png',
+                profile: 'user.png',
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
@@ -134,7 +134,7 @@ exports.router.route('/')
     else {
         UserSchema_1.User.findOne({ userName: userName }).then(function (user) {
             if (user) {
-                var isValid = __1.validPassword(password, user.hash, user.salt);
+                var isValid = index_1.validPassword(password, user.hash, user.salt);
                 if (isValid) {
                     var saltHash = genPassword(newPassword);
                     var salt = saltHash.salt;
@@ -180,7 +180,7 @@ exports.router.post('/email', function (req, res) {
                 var mailoptions = {
                     from: "noreply@lifewaygen.ga",
                     to: email,
-                    subject: "Verify Your email",
+                    subject: "Find you Username",
                     text: "Hello, Your verification code is : " + code_1,
                 };
                 mailer_1.default.sendMail(mailoptions, function (err) {

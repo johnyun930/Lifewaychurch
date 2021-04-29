@@ -10,7 +10,7 @@ export enum IsNotice {
 
 const storage = multer.diskStorage({
     destination:(req,file,callback)=>{
-        callback(null,"public/biblestudy");
+        callback(null,"./build/public/biblestudy");
     },
     filename: (req, file, callback)=>{
         console.log(req.body);

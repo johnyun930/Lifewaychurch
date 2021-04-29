@@ -6,7 +6,7 @@ import { IReview, QTReview } from '../schemas/ReviewSchema';
 
 const storage = multer.diskStorage({
     destination:(req,file,callback)=>{
-        callback(null,"public/QT");
+        callback(null,"./build/public/QT");
     },
     filename: (req, file, callback)=>{
         console.log(req.body);

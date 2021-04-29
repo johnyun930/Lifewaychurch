@@ -45,7 +45,7 @@ dotenv_1.default.config();
 var express_1 = __importDefault(require("express"));
 var cookie_parser_1 = __importDefault(require("cookie-parser"));
 var multer_1 = __importDefault(require("multer"));
-var db_1 = require("./db");
+var index_1 = require("./db/index");
 var cors_1 = __importDefault(require("cors"));
 var UserRouter_1 = require("./routes/UserRouter");
 var LoginRouter_1 = require("./routes/LoginRouter");
@@ -63,21 +63,23 @@ var PostSchema_1 = require("./schemas/PostSchema");
 var ReviewSchema_1 = require("./schemas/ReviewSchema");
 exports.upload = multer_1.default({ dest: 'uploads/' });
 var LocalStrategy = require('passport-local').Strategy;
-db_1.db();
+index_1.db();
 var corsOptions = {
-    origin: "https://" + process.env.ORIGIN,
-    //  origin:`http://${process.env.LOCAL}`,
+    // origin:`https://${process.env.ORIGIN}`,
+    origin: "http://" + process.env.LOCAL,
     credentials: true,
     optionSuccessStatus: 200
 };
 var app = express_1.default();
+console.log(__dirname);
+app.use('/profile', express_1.default.static(__dirname + '/public/profile'));
 app.use(cookie_parser_1.default());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());
 app.use(cors_1.default(corsOptions));
 var store = connect_mongo_1.default.create({
-    mongoUrl: "mongodb+srv://" + (process.env.DB_USERNAME + ":" + process.env.DB_PASSWORD) + "@cluster0.umkpc.mongodb.net/" + process.env.DB_NAME
-    // mongoUrl: `mongodb://localhost:27017/${process.env.DB_NAME}`
+    // mongoUrl: `mongodb+srv://${process.env.DB_USERNAME+":"+process.env.DB_PASSWORD}@cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`
+    mongoUrl: "mongodb://localhost:27017/" + process.env.DB_NAME
 });
 app.use(express_session_1.default({
     secret: process.env.SECRET,
@@ -85,8 +87,8 @@ app.use(express_session_1.default({
     saveUninitialized: true,
     store: store,
     cookie: {
-        domain: '.lifewaygen.ga',
-        //  domain:'localhost',
+        // domain:'.lifewaygen.ga',
+        domain: 'localhost',
         path: '/',
         httpOnly: true,
         secure: false,
@@ -127,16 +129,18 @@ passport_1.default.use(new LocalStrategy({
     });
 }));
 passport_1.default.serializeUser(function (user, done) {
-    var userName = user.userName, firstName = user.firstName, lastName = user.lastName, isAdmin = user.isAdmin;
+    var userName = user.userName, profile = user.profile, firstName = user.firstName, lastName = user.lastName, level = user.level;
     done(null, {
         userName: userName,
         firstName: firstName,
         lastName: lastName,
-        isAdmin: isAdmin
+        profile: profile,
+        level: level
     });
 });
 passport_1.default.deserializeUser(function (user, done) {
     console.log("deserializeUser", user);
+    console.log("profile", user.profile);
     UserSchema_1.User.findOne({ userName: user.userName }, function (err, user) {
         done(err, user);
     });

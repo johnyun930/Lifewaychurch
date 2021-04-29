@@ -11,7 +11,7 @@ var BibleStudyRouter_1 = require("./BibleStudyRouter");
 var ReviewSchema_1 = require("../schemas/ReviewSchema");
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, "./build/public/bulletenBoard");
+        callback(null, "public/QT");
     },
     filename: function (req, file, callback) {
         console.log(req.body);
@@ -25,7 +25,7 @@ exports.upload = multer_1.default({ storage: storage, limits: {
 exports.router = express_1.default.Router();
 exports.router.route('/')
     .get(function (req, res) {
-    PostSchema_1.BulletenBoard.find(function (err, docs) {
+    PostSchema_1.QT.find(function (err, docs) {
         if (err) {
             console.log(err);
         }
@@ -53,11 +53,11 @@ exports.router.route('/')
             isnotice = true;
         }
         var id = 1;
-        PostSchema_1.BulletenBoard.find(function (err, docs) {
+        PostSchema_1.QT.find(function (err, docs) {
             if (docs.length !== 0) {
                 id = docs[0].id + 1;
             }
-            var post = new PostSchema_1.BulletenBoard({
+            var post = new PostSchema_1.QT({
                 id: id,
                 title: title,
                 bibleText: bibleText,
@@ -75,7 +75,7 @@ exports.router.route('/')
 }).patch(function (req, res) {
     var _a = req.body, Id = _a.Id, title = _a.title, bibleText = _a.bibleText, context = _a.context;
     console.log(Id);
-    PostSchema_1.BulletenBoard.findByIdAndUpdate(Id, { title: title, bibleText: bibleText, context: context }, { returnOriginal: false }, function (err, doc) {
+    PostSchema_1.QT.findByIdAndUpdate(Id, { title: title, bibleText: bibleText, context: context }, { returnOriginal: false }, function (err, doc) {
         if (err) {
             res.send({ errMessage: "Sorry, fail to update. Please try again" });
         }
@@ -84,14 +84,15 @@ exports.router.route('/')
         }
     });
 });
+;
 exports.router.route('/:id').
     get(function (req, res) {
-    PostSchema_1.BulletenBoard.findById(req.params.id, function (err, doc) {
+    PostSchema_1.QT.findById(req.params.id, function (err, doc) {
         res.send(doc);
     });
 })
     .delete(function (req, res) {
-    PostSchema_1.BulletenBoard.findByIdAndDelete(req.params.id).then(function () {
+    PostSchema_1.QT.findByIdAndDelete(req.params.id).then(function () {
         res.send({ message: "Successfully deleted" });
     });
 });
@@ -99,7 +100,7 @@ exports.router.route('/review')
     .post(function (req, res) {
     var _a = req.body, postingId = _a.postingId, reviewer = _a.reviewer, comment = _a.comment;
     var date = new Date();
-    var review = new ReviewSchema_1.BulletenBoardReview({
+    var review = new ReviewSchema_1.QTReview({
         postingId: postingId,
         reviewer: reviewer,
         comment: comment,
@@ -115,7 +116,7 @@ exports.router.route('/review')
     });
 }).patch(function (req, res) {
     var _a = req.body, _id = _a._id, comment = _a.comment;
-    ReviewSchema_1.BulletenBoardReview.findByIdAndUpdate(_id, { comment: comment }, { returnOriginal: false }, function (err, doc) {
+    ReviewSchema_1.QTReview.findByIdAndUpdate(_id, { comment: comment }, { returnOriginal: false }, function (err, doc) {
         if (err) {
             res.send({ errMessage: "Sorry, fail to update. Please try again" });
         }
@@ -128,16 +129,16 @@ exports.router.route('/review')
 ;
 exports.router.route("/review/:Id")
     .get(function (req, res) {
-    ReviewSchema_1.BulletenBoardReview.find({ postingId: req.params.Id }, function (err, doc) {
+    ReviewSchema_1.QTReview.find({ postingId: req.params.Id }, function (err, doc) {
         res.send(doc);
     });
 }).delete(function (req, res) {
-    ReviewSchema_1.BulletenBoardReview.findByIdAndDelete(req.params.Id, null, function (err) {
+    ReviewSchema_1.QTReview.findByIdAndDelete(req.params.Id, null, function (err) {
         if (err) {
             res.send({ errMessage: "Sorry, fail to delete. Try again" });
         }
         else {
-            res.send();
+            console.log(req.session);
         }
     });
 });

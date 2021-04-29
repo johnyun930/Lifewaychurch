@@ -11,7 +11,7 @@ var BibleStudyRouter_1 = require("./BibleStudyRouter");
 var ReviewSchema_1 = require("../schemas/ReviewSchema");
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, "public/childSchool");
+        callback(null, "./build/public/childSchool");
     },
     filename: function (req, file, callback) {
         console.log(req.body);

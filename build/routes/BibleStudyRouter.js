@@ -15,7 +15,7 @@ var IsNotice;
 })(IsNotice = exports.IsNotice || (exports.IsNotice = {}));
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, "public/biblestudy");
+        callback(null, "./build/public/biblestudy");
     },
     filename: function (req, file, callback) {
         console.log(req.body);

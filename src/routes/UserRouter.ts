@@ -1,12 +1,21 @@
 import express,{Response,Request} from 'express';
 import {IUser,User} from '../schemas/UserSchema';
 import crypto from 'crypto';
+import multer from 'multer';
 import {  UserData } from './LoginRouter';
-import { validPassword } from '..';
+import { validPassword } from '../';
 import transporter from '../auth/mailer';
 import { IToken, Token, TokenSchema } from '../schemas/Auth';
 export const router = express.Router();
-
+const storage = multer.diskStorage({
+    destination:(req,file,callback)=>{
+        callback(null,"./build/public/profile");
+    },
+    filename: (req, file, callback)=>{
+        console.log(req.body);
+        callback(null,`${req.body.userName}.png`);
+    }
+});
 
 function genPassword(password:string){
     const salt = crypto.randomBytes(32).toString('hex');
@@ -18,6 +27,37 @@ function genPassword(password:string){
 
 }
 
+export const upload = multer({storage,limits:{
+    files: 1,
+    fileSize:1024*1024*10}
+    
+},).single('file');
+
+router.post('/profile',(req:Request,res:Response)=>{
+ 
+    upload(req, res, function (err:any ) {
+           
+ 
+        if (err instanceof multer.MulterError) {
+            res.send({error:"File is too big. 1MB is Maximum"});
+            return;
+
+        }
+ 
+            const userName = req.body.userName;
+            const profile = `/profile/${req.body.userName}.png` 
+            User.updateOne({userName},{profile},undefined,(err)=>{
+                if(err){
+                    console.log(err);
+                }
+            res.send({profile});
+        }
+    
+);
+});
+        
+});
+
 router.route('/')
 
 .post((req:Request,res:Response,next)=>{
@@ -26,17 +66,18 @@ router.route('/')
     Token.findOne({email,code},(err:Error,doc:IToken)=>{
         if(doc){
             const saltHash = genPassword(password);
-            const isAdmin = false;
+            const level = 1;
             const salt = saltHash.salt;
             const hash = saltHash.hash;
             const member: IUser = new User({
                 userName,
                 salt,
                 hash,
+                profile: '/profile/user.png',
                 firstName,
                 lastName,
                 email,
-                isAdmin
+                level
             });
             member.save().then(()=>{
                 console.log("successto save");
@@ -44,7 +85,8 @@ router.route('/')
                         userName: member.userName,
                         firstName: member.firstName,
                         lastName: member.lastName,
-                        isAdmin: member.isAdmin,
+                        profile:member.profile,
+                        level: member.level,
                       }
 
                       Token.deleteOne({email,code},undefined,(err)=>{
@@ -87,7 +129,8 @@ router.route('/')
                                 userName: doc.userName,
                                 firstName: doc.firstName,
                                 lastName: doc.lastName,
-                                isAdmin: doc.isAdmin,
+                                profile:doc.profile,
+                                level: doc.level,
                               }
                               req.logIn(doc,(err)=>{
                                 if (err) { 
@@ -149,7 +192,7 @@ router.post('/email',(req:Request,res:Response)=>{
                 const mailoptions = {
                     from: "noreply@lifewaygen.ga",
                     to:email,
-                    subject: "Find you Username",
+                    subject: "Verify Your email",
                     text: `Hello, Your verification code is : ${code}`,
                 };
                 transporter.sendMail(mailoptions,(err)=>{
@@ -256,7 +299,6 @@ router.route("/findpassword")
     
 });
 
-    
 
 router.get('/findtoken/:token',(req:Request,res:Response)=>{
     const token = req.params.token;

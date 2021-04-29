@@ -6,7 +6,7 @@ import { BulletenBoardReview, IReview } from '../schemas/ReviewSchema';
 
 const storage = multer.diskStorage({
     destination:(req,file,callback)=>{
-        callback(null,"public/bulletenBoard");
+        callback(null,"./build/public/bulletenBoard");
     },
     filename: (req, file, callback)=>{
         console.log(req.body);

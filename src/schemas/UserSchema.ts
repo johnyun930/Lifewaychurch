@@ -6,7 +6,8 @@ export interface IUser extends Document{
     firstName: string,
     lastName: string,
     email: string,
-    isAdmin:boolean
+    profile: string,
+    level:number
 }
 
 export const UserSchema: Schema = new Schema({
@@ -15,9 +16,9 @@ export const UserSchema: Schema = new Schema({
     salt: {type:String, required: true},
     firstName: {type:String, required:true},
     lastName: {type:String, required:true},
+    profile:{type:String, required:true},
     email: {type:String,required:true,unique:true},
-    isAdmin:Boolean
-
+    level:{type:Number,required:true}
 });
 
 export interface ISession extends Document{

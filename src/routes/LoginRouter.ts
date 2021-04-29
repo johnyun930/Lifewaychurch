@@ -11,7 +11,8 @@ export interface UserData {
   userName: string
   firstName: string
   lastName: string
-  isAdmin: boolean
+  profile:string
+  level: number
 
 }
 router.post('/user',(req:Request,res:Response)=>{
@@ -38,7 +39,8 @@ router.post('/',function(req, res, next) {
           userName: user.userName,
           firstName: user.firstName,
           lastName: user.lastName,
-          isAdmin: user.isAdmin,
+          profile:user.profile,
+          level: user.level,
         }
         
         req.logIn(user, function(err) {

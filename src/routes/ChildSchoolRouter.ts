@@ -6,7 +6,7 @@ import { ChildSchoolReview, IReview } from '../schemas/ReviewSchema';
 
 const storage = multer.diskStorage({
     destination:(req,file,callback)=>{
-        callback(null,"public/childSchool");
+        callback(null,"./build/public/childSchool");
     },
     filename: (req, file, callback)=>{
         console.log(req.body);

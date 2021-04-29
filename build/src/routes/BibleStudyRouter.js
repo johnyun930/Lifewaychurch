@@ -3,15 +3,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.router = exports.upload = void 0;
+exports.router = exports.upload = exports.IsNotice = void 0;
 var express_1 = __importDefault(require("express"));
 var PostSchema_1 = require("../schemas/PostSchema");
 var multer_1 = __importDefault(require("multer"));
-var BibleStudyRouter_1 = require("./BibleStudyRouter");
 var ReviewSchema_1 = require("../schemas/ReviewSchema");
+var IsNotice;
+(function (IsNotice) {
+    IsNotice["false"] = "0";
+    IsNotice["true"] = "1";
+})(IsNotice = exports.IsNotice || (exports.IsNotice = {}));
 var storage = multer_1.default.diskStorage({
     destination: function (req, file, callback) {
-        callback(null, "./build/public/bulletenBoard");
+        callback(null, "public/biblestudy");
     },
     filename: function (req, file, callback) {
         console.log(req.body);
@@ -25,7 +29,7 @@ exports.upload = multer_1.default({ storage: storage, limits: {
 exports.router = express_1.default.Router();
 exports.router.route('/')
     .get(function (req, res) {
-    PostSchema_1.BulletenBoard.find(function (err, docs) {
+    PostSchema_1.BibleStudy.find(function (err, docs) {
         if (err) {
             console.log(err);
         }
@@ -49,15 +53,16 @@ exports.router.route('/')
             var file_1 = req.file.path;
         }
         var isnotice = false;
-        if (notice === BibleStudyRouter_1.IsNotice.true) {
+        if (notice === IsNotice.true) {
             isnotice = true;
         }
         var id = 1;
-        PostSchema_1.BulletenBoard.find(function (err, docs) {
+        PostSchema_1.BibleStudy.find(function (err, docs) {
             if (docs.length !== 0) {
                 id = docs[0].id + 1;
+                console.log(id);
             }
-            var post = new PostSchema_1.BulletenBoard({
+            var post = new PostSchema_1.BibleStudy({
                 id: id,
                 title: title,
                 bibleText: bibleText,
@@ -75,7 +80,7 @@ exports.router.route('/')
 }).patch(function (req, res) {
     var _a = req.body, Id = _a.Id, title = _a.title, bibleText = _a.bibleText, context = _a.context;
     console.log(Id);
-    PostSchema_1.BulletenBoard.findByIdAndUpdate(Id, { title: title, bibleText: bibleText, context: context }, { returnOriginal: false }, function (err, doc) {
+    PostSchema_1.BibleStudy.findByIdAndUpdate(Id, { title: title, bibleText: bibleText, context: context }, { returnOriginal: false }, function (err, doc) {
         if (err) {
             res.send({ errMessage: "Sorry, fail to update. Please try again" });
         }
@@ -86,20 +91,32 @@ exports.router.route('/')
 });
 exports.router.route('/:id').
     get(function (req, res) {
-    PostSchema_1.BulletenBoard.findById(req.params.id, function (err, doc) {
+    PostSchema_1.BibleStudy.findById(req.params.id, function (err, doc) {
         res.send(doc);
     });
 })
     .delete(function (req, res) {
-    PostSchema_1.BulletenBoard.findByIdAndDelete(req.params.id).then(function () {
-        res.send({ message: "Successfully deleted" });
+    console.log("deleting");
+    PostSchema_1.BibleStudy.findByIdAndDelete(req.params.id).then(function () {
+        ReviewSchema_1.BibleStudyReview.deleteMany({ postingId: req.params.id }, undefined, function (err) {
+            if (err) {
+                console.log("Fail to delete the all review of the post");
+            }
+            else {
+                res.send({ message: "Successfully deleted" });
+            }
+        });
+    }).catch(function (err) {
+        if (err) {
+            res.send({ errMessage: "Fail to delete post Try Aagin" });
+        }
     });
 });
 exports.router.route('/review')
     .post(function (req, res) {
     var _a = req.body, postingId = _a.postingId, reviewer = _a.reviewer, comment = _a.comment;
     var date = new Date();
-    var review = new ReviewSchema_1.BulletenBoardReview({
+    var review = new ReviewSchema_1.BibleStudyReview({
         postingId: postingId,
         reviewer: reviewer,
         comment: comment,
@@ -115,7 +132,7 @@ exports.router.route('/review')
     });
 }).patch(function (req, res) {
     var _a = req.body, _id = _a._id, comment = _a.comment;
-    ReviewSchema_1.BulletenBoardReview.findByIdAndUpdate(_id, { comment: comment }, { returnOriginal: false }, function (err, doc) {
+    ReviewSchema_1.BibleStudyReview.findByIdAndUpdate(_id, { comment: comment }, { returnOriginal: false }, function (err, doc) {
         if (err) {
             res.send({ errMessage: "Sorry, fail to update. Please try again" });
         }
@@ -125,14 +142,14 @@ exports.router.route('/review')
         }
     });
 });
-;
 exports.router.route("/review/:Id")
     .get(function (req, res) {
-    ReviewSchema_1.BulletenBoardReview.find({ postingId: req.params.Id }, function (err, doc) {
+    ReviewSchema_1.BibleStudyReview.find({ postingId: req.params.Id }, function (err, doc) {
         res.send(doc);
     });
-}).delete(function (req, res) {
-    ReviewSchema_1.BulletenBoardReview.findByIdAndDelete(req.params.Id, null, function (err) {
+})
+    .delete(function (req, res) {
+    ReviewSchema_1.BibleStudyReview.findByIdAndDelete(req.params.Id, null, function (err) {
         if (err) {
             res.send({ errMessage: "Sorry, fail to delete. Try again" });
         }
@@ -141,4 +158,3 @@ exports.router.route("/review/:Id")
         }
     });
 });
-;

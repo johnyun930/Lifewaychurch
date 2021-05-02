@@ -26,8 +26,8 @@ export const upload = multer({dest:'uploads/'});
 const LocalStrategy = require('passport-local').Strategy;
 db();
 const corsOptions ={
-    // origin:`https://${process.env.ORIGIN}`,
-     origin:`http://${process.env.LOCAL}`,
+    origin:`https://${process.env.ORIGIN}`,
+    //  origin:`http://${process.env.LOCAL}`,
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }
@@ -40,8 +40,8 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(cors(corsOptions));
 const store = MongoStore.create({
-    // mongoUrl: `mongodb+srv://${process.env.DB_USERNAME+":"+process.env.DB_PASSWORD}@cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`
-    mongoUrl: `mongodb://localhost:27017/${process.env.DB_NAME}`
+    mongoUrl: `mongodb+srv://${process.env.DB_USERNAME+":"+process.env.DB_PASSWORD}@cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`
+    // mongoUrl: `mongodb://localhost:27017/${process.env.DB_NAME}`
 
 })
 app.use(session({
@@ -50,8 +50,8 @@ app.use(session({
     saveUninitialized:true,
     store: store,
     cookie: {
-        // domain:'.lifewaygen.ga',
-         domain:'localhost',
+        domain:'.lifewaygen.ga',
+        //  domain:'localhost',
         path: '/',
         httpOnly:true,
         secure: false,

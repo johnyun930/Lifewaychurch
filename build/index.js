@@ -65,8 +65,8 @@ exports.upload = multer_1.default({ dest: 'uploads/' });
 var LocalStrategy = require('passport-local').Strategy;
 index_1.db();
 var corsOptions = {
-    // origin:`https://${process.env.ORIGIN}`,
-    origin: "http://" + process.env.LOCAL,
+    origin: "https://" + process.env.ORIGIN,
+    //  origin:`http://${process.env.LOCAL}`,
     credentials: true,
     optionSuccessStatus: 200
 };
@@ -78,8 +78,8 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());
 app.use(cors_1.default(corsOptions));
 var store = connect_mongo_1.default.create({
-    // mongoUrl: `mongodb+srv://${process.env.DB_USERNAME+":"+process.env.DB_PASSWORD}@cluster0.umkpc.mongodb.net/${process.env.DB_NAME}`
-    mongoUrl: "mongodb://localhost:27017/" + process.env.DB_NAME
+    mongoUrl: "mongodb+srv://" + (process.env.DB_USERNAME + ":" + process.env.DB_PASSWORD) + "@cluster0.umkpc.mongodb.net/" + process.env.DB_NAME
+    // mongoUrl: `mongodb://localhost:27017/${process.env.DB_NAME}`
 });
 app.use(express_session_1.default({
     secret: process.env.SECRET,
@@ -87,8 +87,8 @@ app.use(express_session_1.default({
     saveUninitialized: true,
     store: store,
     cookie: {
-        // domain:'.lifewaygen.ga',
-        domain: 'localhost',
+        domain: '.lifewaygen.ga',
+        //  domain:'localhost',
         path: '/',
         httpOnly: true,
         secure: false,
